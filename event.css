@@ -1294,3 +1294,55 @@ nav ul li a:hover{ color:#f30909; }
     opacity: 1;
     transform: rotateX(0deg) translateY(0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.subscribe-box{
+    max-width: 360px;
+    height: 50px;
+}
+
+.subscribe-box input{
+    font-size:14px;
+    padding:10px;
+}
+
+.subscribe-box button{
+    width: 35px;
+    height: 20px;
+}
+
+
+
+
+
+
+
+
+
+.contact-box{
+    padding:12px;
+    max-width:220px;
+}
+
+.contact-box h4{
+    font-size:15px;
+}
+
+.phone-icon{
+    font-size:18px;
+}

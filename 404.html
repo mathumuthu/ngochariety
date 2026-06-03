@@ -215,6 +215,58 @@ html, body {
     }
 }
 
+
+/* BUTTON GROUP */
+.btn-group{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+/* BACK BUTTON */
+.back-btn{
+    background:#222;
+    color:#fff;
+    border:none;
+    padding:12px 30px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.back-btn:hover{
+    background:#444;
+}
+
+/* HOME BUTTON */
+.home-btn{
+    background:#e53935;
+    padding:12px 30px;
+    border-radius:8px;
+    color:#fff;
+    text-decoration:none;
+    font-size:15px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.home-btn:hover{
+    background:#e1ad55fb;
+}
+
+
+
+
+
+
+
+
+
+
+
 </style>
 
 <!-- ICONS (OPTIONAL) -->
@@ -241,9 +293,27 @@ html, body {
     <p class="error-sub">The page you are looking for does not exist.</p>
 
     <!-- BUTTON -->
-    <a href="index.html" class="home-btn">Back to Home</a>
+    <!-- <a href="index.html" class="home-btn">Back to Home</a> -->
+    <div class="btn-group">
+    <button onclick="history.back()" class="back-btn">
+        ← Go Back
+    </button>
 
+    <a href="index.html" class="home-btn">
+        🏠 Go Home
+    </a>
 </div>
 
+</div>
+<!-- BUTTONS -->
+<!-- <div class="btn-group">
+    <button onclick="history.back()" class="back-btn">
+        ← Go Back
+    </button>
+
+    <a href="index.html" class="home-btn">
+        🏠 Go Home
+    </a>
+</div> -->
 </body>
 </html>

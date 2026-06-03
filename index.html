@@ -499,7 +499,7 @@ Always move forward with confidence and purpose.</p>
                 <p>$5,500</p>
             </div>
 
-            <h3 class="cause-title">Get Poor Money Strang People Acutor</h3>
+            <h3 class="cause-title">Build strong support and stabillity</strong></h3>
 
             <button class="donate-btn" onclick="window.location.href='404.html'">
     Donate Now
@@ -521,7 +521,7 @@ Always move forward with confidence and purpose.</p>
                 <p>$1,910</p>
             </div>
 
-            <h3 class="cause-title">Get Poor Money Strang People Acutor</h3>
+            <h3 class="cause-title">There are many variations of passages</h3>
 
             <button class="donate-btn" onclick="window.location.href='404.html'">
     Donate Now
@@ -608,7 +608,7 @@ Always move forward with confidence.
 
         <p id="errorMsg" class="error-text"></p>
 
-        <a href="#" class="donate-main-btn" id="donateBtn">Donate Now</a>
+        <a href="404.html" class="donate-main-btn" id="donateBtn">Donate Now</a>
 
     </div>
 
@@ -801,9 +801,9 @@ Always move forward with confidence.
 
         <!-- COLUMN 1 -->
         <div class="footer-col about scroll-rotate">
-            <div class="footer-logo">
+         <a href="index.html">   <div class="footer-logo">
                 <img src="img/logo1.webp" alt="">
-            </div>
+            </div></a>
 
             <p>There are many variations of passages of Lorem Ip available, but the majority have.</p>
 
@@ -828,7 +828,7 @@ Always move forward with confidence.
             <ul>
                 <li><a href="about.html">About</a></li>
                 <li><a href="event.html">Events</a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="donate.html">Donate</a></li>
                 <li><a href="blog.html">Blogs</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
@@ -838,7 +838,6 @@ Always move forward with confidence.
         <div class="footer-col scroll-rotate">
             <h3>Explore</h3>
             <ul>
-                <li><a href="donate.html">Donate</a></li>
                 <li><a href="404.html">Campaigns</a></li>
                 <li><a href="404.html">Fundraise</a></li>
                 <li><a href="404.html">Online Service</a></li>
@@ -851,13 +850,12 @@ Always move forward with confidence.
         <div class="footer-col contact scroll-rotate">
 
             <div class="contact-box">
-                <div class="arrow"></div>
-                <i class="ri-phone-fill phone-icon"></i>
-                <div>
-                    <h4>+91 1234567890</h4>
-                    <h4>+91 0987654321</h4>
-                </div>
-            </div>
+    <!-- <div class="arrow"></div> -->
+    <i class="ri-phone-fill phone-icon"></i>
+    <div>
+        <h4>+91 9876543210</h4>
+    </div>
+</div>
 
             <div class="contact-item">
                 <i class="ri-earth-fill"></i>
@@ -1111,6 +1109,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
     elements.forEach(el => observer.observe(el));
 });
+
+
+
+
+
+
+
+subscribeBtn.addEventListener("click", function () {
+    const email = emailInput.value.trim();
+
+    emailError.style.display = "none";
+    emailInput.style.borderColor = "#ccc";
+
+    if (email === "") {
+        emailError.innerText = "Please fill the field";
+        emailError.style.display = "block";
+        emailInput.style.borderColor = "red";
+        return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        emailError.innerText = "Please enter a valid email address";
+        emailError.style.display = "block";
+        emailInput.style.borderColor = "red";
+        return;
+    }
+
+    // Success Message
+    emailError.style.color = "#28a745";
+    emailError.innerText = "Email sent successfully!";
+    emailError.style.display = "block";
+
+    emailInput.value = "";
+
+    setTimeout(() => {
+        emailError.style.display = "none";
+    }, 3000);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 
