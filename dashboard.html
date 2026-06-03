@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO & Charity - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%); }
+        .gradient-bg-warm { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .gradient-bg-rose { background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); }
+        .gradient-bg-blue { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .gradient-text { background: linear-gradient(135deg, #10b981 0%, #059669 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-transition { transition: transform 0.3s ease-in-out; }
+        .nav-item.active { background-color: #ecfdf5; color: #059669; border-right: 3px solid #059669; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); }
+        .fade-in { animation: fadeIn 0.4s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .mobile-menu-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .logo-hover { transition: transform 0.2s ease; }
+        .logo-hover:hover { transform: scale(1.05); }
+        .logo-img { object-fit: contain; max-height: 100%; max-width: 100%; }
+        .admin-badge { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .chart-bar { transition: height 0.5s ease; }
+        .status-dot { box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor; }
+        .logout-btn { transition: all 0.2s ease; }
+        .logout-btn:hover { background-color: #fee2e2; color: #dc2626; transform: translateY(-1px); }
+        .logout-btn:active { transform: translateY(0); }
+        .ngo-card { transition: all 0.3s ease; }
+        .ngo-card:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(0,0,0,0.15); }
+        .donation-progress { transition: width 0.5s ease; }
+    </style>
+<!-- <base target="_blank"> -->
+</head>
+<body class="bg-gray-50 text-gray-800 overflow-x-hidden">
+
+    <!-- Mobile Header -->
+    <div class="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+        <div class="flex items-center gap-3">
+            <button id="mobile-menu-btn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="fas fa-bars text-gray-600 text-xl"></i>
+            </button>
+            <a href="admin-dashboard.html" target="_blank" class="flex items-center gap-2 logo-hover">
+                <img src="chat.png" alt="NGO Logo" class="w-10 h-10 rounded-lg shadow-md logo-img">
+                <div>
+                    <h1 class="font-bold text-gray-900 text-sm">Stackly</h1>
+                    <div class="flex items-center gap-1">
+                        <span class="admin-badge text-white text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="relative p-2 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-bell text-gray-600"></i>
+                <span class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">8</span>
+            </button>
+            <button onclick="handleLogout()" class="logout-btn p-2 text-gray-600 hover:text-red-600 rounded-lg transition-colors" title="Logout">
+                <i class="fas fa-sign-out-alt text-lg"></i>
+            </button>
+            <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-semibold text-sm border-2 border-emerald-500">AD</div>
+        </div>
+    </div>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 sidebar-transition transform -translate-x-full lg:translate-x-0 flex flex-col h-screen overflow-y-auto">
+            <div class="hidden lg:flex items-center gap-3 p-6 border-b border-gray-100">
+                <a href="Dash1.html" target="_blank" class="flex items-center gap-3 logo-hover group">
+                    <img src="chat.png" alt="NGO Logo" class="w-12 h-12 rounded-xl shadow-lg shadow-emerald-200 logo-img group-hover:shadow-emerald-300 transition-shadow">
+                    <div>
+                        <h1 class="font-bold text-gray-900 text-lg">Stackly</h1>
+                        <div class="flex items-center gap-2">
+                            <p class="text-xs text-gray-500">NGO Admin Portal</p>
+                            <span class="admin-badge text-white text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="lg:hidden p-4 border-b border-gray-100">
+                <a href="dash.html" target="_blank" class="flex items-center gap-3 logo-hover">
+                    <img src="chat.png" alt="NGO Logo" class="w-10 h-10 rounded-lg shadow-md logo-img">
+                    <div>
+                        <h1 class="font-bold text-gray-900">Stackly</h1>
+                        <div class="flex items-center gap-1">
+                            <span class="admin-badge text-white text-[10px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="lg:hidden flex justify-end p-4 absolute top-0 right-0">
+                <button id="close-sidebar" class="p-2 hover:bg-gray-100 rounded-lg">
+                    <i class="fas fa-times text-gray-600 text-xl"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 px-4 py-4 space-y-1">
+                <button onclick="navigateTo('dashboard')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group active" data-page="dashboard">
+                    <i class="fas fa-chart-line w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Dashboard</span>
+                </button>
+                <button onclick="navigateTo('donations')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="donations">
+                    <i class="fas fa-hand-holding-heart w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Donations</span>
+                    <span class="ml-auto bg-emerald-100 text-emerald-700 text-xs rounded-full px-2 py-0.5">$12.4K</span>
+                </button>
+                <button onclick="navigateTo('volunteers')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="volunteers">
+                    <i class="fas fa-users w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Volunteers</span>
+                    <span class="ml-auto bg-blue-100 text-blue-700 text-xs rounded-full px-2 py-0.5">156</span>
+                </button>
+                <button onclick="navigateTo('campaigns')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="campaigns">
+                    <i class="fas fa-bullhorn w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Campaigns</span>
+                    <span class="ml-auto bg-amber-100 text-amber-700 text-xs rounded-full px-2 py-0.5">8</span>
+                </button>
+                <button onclick="navigateTo('beneficiaries')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="beneficiaries">
+                    <i class="fas fa-heart w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Beneficiaries</span>
+                    <span class="ml-auto bg-rose-100 text-rose-700 text-xs rounded-full px-2 py-0.5">2.4K</span>
+                </button>
+                <button onclick="navigateTo('events')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="events">
+                    <i class="fas fa-calendar-alt w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Events</span>
+                    <span class="ml-auto bg-purple-100 text-purple-700 text-xs rounded-full px-2 py-0.5">12</span>
+                </button>
+                <button onclick="navigateTo('analytics')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="analytics">
+                    <i class="fas fa-chart-pie w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Impact Analytics</span>
+                </button>
+                <!-- <button onclick="navigateTo('reports')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="reports">
+                    <i class="fas fa-file-alt w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Reports</span>
+                </button> -->
+                <button onclick="navigateTo('settings')" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-all group" data-page="settings">
+                    <i class="fas fa-cog w-5 text-center group-hover:text-emerald-600 transition-colors"></i>
+                    <span class="font-medium">Settings</span>
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-gray-200">
+                <a href="404.html">
+                    <button onclick="handleLogout()" class="logout-btn w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all group">
+                        <i class="fas fa-sign-out-alt w-5 text-center group-hover:text-red-600 transition-colors"></i>
+                        <span class="font-medium">Logout</span>
+                    </button>
+                </a>
+            </div>
+
+            <div class="p-4 border-t border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50 m-4 rounded-xl">
+                <h3 class="text-xs font-semibold text-emerald-800 uppercase tracking-wider mb-3">Impact Summary</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between"><span class="text-sm text-gray-700">Lives Impacted</span><span class="text-sm font-bold text-emerald-600">12,847</span></div>
+                    <div class="flex items-center justify-between"><span class="text-sm text-gray-700">Funds Raised</span><span class="text-sm font-bold text-emerald-600">$124.5K</span></div>
+                    <div class="flex items-center justify-between"><span class="text-sm text-gray-700">Active Projects</span><span class="text-sm font-bold text-emerald-600">24</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <div id="sidebar-overlay" class="fixed inset-0 z-40 mobile-menu-overlay hidden lg:hidden"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0 overflow-y-auto">
+            <!-- Desktop Header -->
+            <header class="hidden lg:flex items-center justify-between px-8 py-4 bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="flex-1 max-w-2xl">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Search donors, volunteers, campaigns..." class="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 ml-6">
+                    <button class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                      <a href="404.html">  <i class="fas fa-bell text-gray-600 text-lg"></i></a>
+                        <span class="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white">8</span>
+                    </button>
+                    <button class="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600">
+                       <a href="404.html"> <i class="fas fa-envelope text-lg"></i></a>
+                    </button>
+                    <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+                        <div class="text-right">
+                            <p id="userName" class="text-sm font-semibold text-gray-900">User</p>
+                            <p class="text-xs text-gray-500">NGO Administrator</p>
+                        </div>
+                        <!-- <div id="userInitial" class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-semibold cursor-pointer hover:bg-emerald-200 transition-colors border-2 border-emerald-500">U</div> -->
+                    </div>
+                </div>
+            </header>
+
+            <!-- Mobile Search -->
+            <div class="lg:hidden px-4 py-3 bg-white border-b border-gray-200">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Search donors, volunteers..." class="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-0 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-4 lg:p-8 max-w-7xl mx-auto">
+
+                <!-- Dashboard Page -->
+                <div id="page-dashboard" class="page-content fade-in">
+                    <div class="mb-8">
+                        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">NGO Dashboard</h1>
+                        <p class="text-gray-500">Overview of donations, volunteers, and impact metrics</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 card-hover">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600"><i class="fas fa-hand-holding-usd text-lg"></i></div>
+                                <span class="text-xs text-emerald-600 font-medium flex items-center gap-1"><i class="fas fa-arrow-up"></i> 18%</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">Total Donations</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-gray-900">$124.5K</p>
+                            <p class="text-xs text-gray-500 mt-1">This year</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 card-hover">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600"><i class="fas fa-users text-lg"></i></div>
+                                <span class="text-xs text-emerald-600 font-medium flex items-center gap-1"><i class="fas fa-arrow-up"></i> 24%</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">Volunteers</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-gray-900">156</p>
+                            <p class="text-xs text-gray-500 mt-1">Active this month</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 card-hover">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600"><i class="fas fa-heart text-lg"></i></div>
+                                <span class="text-xs text-emerald-600 font-medium flex items-center gap-1"><i class="fas fa-arrow-up"></i> 32%</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">Lives Impacted</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-gray-900">12,847</p>
+                            <p class="text-xs text-gray-500 mt-1">Across all programs</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 card-hover">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600"><i class="fas fa-bullhorn text-lg"></i></div>
+                                <span class="text-xs text-emerald-600 font-medium flex items-center gap-1"><i class="fas fa-arrow-up"></i> 5</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-1">Active Campaigns</p>
+                            <p class="text-2xl lg:text-3xl font-bold text-gray-900">8</p>
+                            <p class="text-xs text-gray-500 mt-1">3 ending soon</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h2 class="text-lg font-bold text-gray-900">Donation Trends</h2>
+                                    <p class="text-sm text-gray-500">Monthly donations and volunteer hours</p>
+                                </div>
+                                <select class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    <option>Last 6 Months</option>
+                                    <option>Last 12 Months</option>
+                                    <option>This Year</option>
+                                </select>
+                            </div>
+                            <div class="h-64 flex items-end justify-between gap-2 px-2">
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-emerald-200 rounded-t-lg chart-bar" style="height: 45%"></div>
+                                    <div class="w-full bg-amber-200 rounded-t-lg chart-bar" style="height: 30%"></div>
+                                    <span class="text-xs text-gray-500">Jan</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-emerald-200 rounded-t-lg chart-bar" style="height: 60%"></div>
+                                    <div class="w-full bg-amber-200 rounded-t-lg chart-bar" style="height: 40%"></div>
+                                    <span class="text-xs text-gray-500">Feb</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-emerald-200 rounded-t-lg chart-bar" style="height: 75%"></div>
+                                    <div class="w-full bg-amber-200 rounded-t-lg chart-bar" style="height: 55%"></div>
+                                    <span class="text-xs text-gray-500">Mar</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-emerald-200 rounded-t-lg chart-bar" style="height: 50%"></div>
+                                    <div class="w-full bg-amber-200 rounded-t-lg chart-bar" style="height: 35%"></div>
+                                    <span class="text-xs text-gray-500">Apr</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-emerald-200 rounded-t-lg chart-bar" style="height: 85%"></div>
+                                    <div class="w-full bg-amber-200 rounded-t-lg chart-bar" style="height: 65%"></div>
+                                    <span class="text-xs text-gray-500">May</span>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center gap-2">
+                                    <div class="w-full bg-emerald-200 rounded-t-lg chart-bar" style="height: 70%"></div>
+                                    <div class="w-full bg-amber-200 rounded-t-lg chart-bar" style="height: 50%"></div>
+                                    <span class="text-xs text-gray-500">Jun</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center gap-6 mt-4">
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-emerald-200 rounded"></div><span class="text-sm text-gray-600">Donations ($K)</span></div>
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-amber-200 rounded"></div><span class="text-sm text-gray-600">Volunteer Hours</span></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button class="p-4 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-colors text-center group">
+                                        <div class="w-10 h-10 bg-emerald-200 rounded-lg flex items-center justify-center text-emerald-700 mx-auto mb-2 group-hover:scale-110 transition-transform"><i class="fas fa-plus"></i></div>
+                                        <p class="text-sm font-medium text-gray-900">Add Donation</p>
+                                    </button>
+                                    <button class="p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors text-center group">
+                                        <div class="w-10 h-10 bg-blue-200 rounded-lg flex items-center justify-center text-blue-700 mx-auto mb-2 group-hover:scale-110 transition-transform"><i class="fas fa-user-plus"></i></div>
+                                        <p class="text-sm font-medium text-gray-900">Add Volunteer</p>
+                                    </button>
+                                    <button class="p-4 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors text-center group">
+                                        <div class="w-10 h-10 bg-amber-200 rounded-lg flex items-center justify-center text-amber-700 mx-auto mb-2 group-hover:scale-110 transition-transform"><i class="fas fa-bullhorn"></i></div>
+                                        <p class="text-sm font-medium text-gray-900">New Campaign</p>
+                                    </button>
+                                    <button class="p-4 bg-rose-50 rounded-xl hover:bg-rose-100 transition-colors text-center group">
+                                        <div class="w-10 h-10 bg-rose-200 rounded-lg flex items-center justify-center text-rose-700 mx-auto mb-2 group-hover:scale-110 transition-transform"><i class="fas fa-file-export"></i></div>
+                                        <p class="text-sm font-medium text-gray-900">Export Report</p>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h2>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 flex-shrink-0"><i class="fas fa-hand-holding-usd text-xs"></i></div>
+                                        <div><p class="text-sm font-medium text-gray-900">New donation received</p><p class="text-xs text-gray-500">$500 from John Smith - 5 min ago</p></div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 flex-shrink-0"><i class="fas fa-user text-xs"></i></div>
+                                        <div><p class="text-sm font-medium text-gray-900">New volunteer joined</p><p class="text-xs text-gray-500">Sarah Johnson - 12 min ago</p></div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 flex-shrink-0"><i class="fas fa-bullhorn text-xs"></i></div>
+                                        <div><p class="text-sm font-medium text-gray-900">Campaign launched</p><p class="text-xs text-gray-500">Clean Water Initiative - 1 hr ago</p></div>
+                                    </div>
+                                </div>
+                                <button class="w-full mt-4 py-2 text-emerald-600 text-sm font-medium hover:bg-emerald-50 rounded-lg transition-colors">View All Activity</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-bold text-gray-900">Active Campaigns</h2>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">5 active</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="p-4 border border-gray-200 rounded-lg">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600"><i class="fas fa-tint"></i></div>
+                                            <div><p class="font-medium text-gray-900">Clean Water Initiative</p><p class="text-sm text-gray-500">Goal: $50,000</p></div>
+                                        </div>
+                                        <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">Active</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <div class="flex justify-between text-sm mb-1"><span class="text-gray-600">Raised: $32,450</span><span class="font-semibold text-gray-900">65%</span></div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg-blue h-2 rounded-full donation-progress" style="width: 65%"></div></div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs text-gray-500"><span><i class="fas fa-users mr-1"></i> 234 donors</span><span><i class="fas fa-clock mr-1"></i> 12 days left</span></div>
+                                </div>
+                                <div class="p-4 border border-gray-200 rounded-lg">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600"><i class="fas fa-heart"></i></div>
+                                            <div><p class="font-medium text-gray-900">Food for Families</p><p class="text-sm text-gray-500">Goal: $25,000</p></div>
+                                        </div>
+                                        <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">Active</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <div class="flex justify-between text-sm mb-1"><span class="text-gray-600">Raised: $18,200</span><span class="font-semibold text-gray-900">73%</span></div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg-rose h-2 rounded-full donation-progress" style="width: 73%"></div></div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs text-gray-500"><span><i class="fas fa-users mr-1"></i> 156 donors</span><span><i class="fas fa-clock mr-1"></i> 8 days left</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-bold text-gray-900">Beneficiaries Overview</h2>
+                                <span class="flex items-center gap-1.5 text-sm text-emerald-600"><span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>Growing</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2"><span class="text-gray-600">Children Supported</span><span class="font-semibold text-gray-900">4,521</span></div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg-blue h-2 rounded-full" style="width: 75%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2"><span class="text-gray-600">Families Assisted</span><span class="font-semibold text-gray-900">2,134</span></div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg-warm h-2 rounded-full" style="width: 60%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2"><span class="text-gray-600">Elderly Care</span><span class="font-semibold text-gray-900">1,876</span></div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg-rose h-2 rounded-full" style="width: 45%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2"><span class="text-gray-600">Community Programs</span><span class="font-semibold text-gray-900">3,245</span></div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg h-2 rounded-full" style="width: 85%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2"><span class="text-gray-600">Education Support</span><span class="font-semibold text-gray-900">1,071</span></div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-purple-500 h-2 rounded-full" style="width: 30%"></div></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600"><i class="fas fa-chart-line"></i></div>
+                                    <div><p class="font-medium text-emerald-900">Impact Growth</p><p class="text-sm text-emerald-700">+32% more beneficiaries served this quarter</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donations Page -->
+                <div id="page-donations" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div><h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Donations</h1><p class="text-gray-500">Track and manage all donations and donors</p></div>
+                        <div class="flex gap-2">
+                            <button class="px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"><a href="404.html"><i class="fas fa-download"></i>Export</a></button>
+                            <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-200 flex items-center gap-2"> <a href="404.html"><i class="fas fa-plus"></i>Add Donation</a></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Total Raised</p><p class="text-2xl font-bold text-emerald-600">$124.5K</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">This Month</p><p class="text-2xl font-bold text-emerald-600">$18.2K</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Total Donors</p><p class="text-2xl font-bold text-blue-600">892</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Avg. Donation</p><p class="text-2xl font-bold text-amber-600">$140</p></div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+                        <div class="flex flex-col lg:flex-row gap-4">
+                            <div class="flex-1 relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" placeholder="Search by donor name, email, or ID..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                            <div class="flex gap-2">
+                                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"><option>All Types</option><option>One-time</option><option>Recurring</option><option>Corporate</option></select>
+                                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"><option>All Status</option><option>Completed</option><option>Pending</option><option>Failed</option></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Donor</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Campaign</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-semibold">JS</div>
+                                                <div><p class="font-medium text-gray-900">John Smith</p><p class="text-sm text-gray-500">john.smith@email.com</p></div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4"><span class="font-bold text-gray-900">$500</span></td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">One-time</span></td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Clean Water Initiative</td>
+                                        <td class="px-6 py-4"><span class="flex items-center gap-1.5 text-sm text-emerald-600"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span>Completed</span></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Jun 2, 2026</td>
+                                        <td class="px-6 py-4 text-right"><button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">MJ</div>
+                                                <div><p class="font-medium text-gray-900">Mary Johnson</p><p class="text-sm text-gray-500">mary.j@email.com</p></div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4"><span class="font-bold text-gray-900">$1,200</span></td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Recurring</span></td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Food for Families</td>
+                                        <td class="px-6 py-4"><span class="flex items-center gap-1.5 text-sm text-emerald-600"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span>Completed</span></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">Jun 1, 2026</td>
+                                        <td class="px-6 py-4 text-right"><button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-semibold">TC</div>
+                                                <div><p class="font-medium text-gray-900">Tech Corp Inc.</p><p class="text-sm text-gray-500">donations@techcorp.com</p></div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4"><span class="font-bold text-gray-900">$5,000</span></td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">Corporate</span></td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Education Support</td>
+                                        <td class="px-6 py-4"><span class="flex items-center gap-1.5 text-sm text-amber-600"><span class="w-2 h-2 bg-amber-500 rounded-full"></span>Pending</span></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">May 30, 2026</td>
+                                        <td class="px-6 py-4 text-right"><button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 font-semibold">DW</div>
+                                                <div><p class="font-medium text-gray-900">David Williams</p><p class="text-sm text-gray-500">david.w@email.com</p></div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4"><span class="font-bold text-gray-900">$250</span></td>
+                                        <td class="px-6 py-4"><span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">One-time</span></td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">Elderly Care Program</td>
+                                        <td class="px-6 py-4"><span class="flex items-center gap-1.5 text-sm text-emerald-600"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span>Completed</span></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">May 28, 2026</td>
+                                        <td class="px-6 py-4 text-right"><button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                            <p class="text-sm text-gray-500">Showing 1-4 of 892 donations</p>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50" disabled>Previous</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volunteers Page -->
+                <div id="page-volunteers" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div><h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Volunteers</h1><p class="text-gray-500">Manage volunteer registrations and activities</p></div>
+                     <a href="404.html">   <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-200 flex items-center gap-2"><i class="fas fa-plus"></i>Add Volunteer</button></a>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Total Volunteers</p><p class="text-2xl font-bold text-blue-600">156</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Active This Month</p><p class="text-2xl font-bold text-emerald-600">89</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Hours Contributed</p><p class="text-2xl font-bold text-amber-600">2,340</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">New This Month</p><p class="text-2xl font-bold text-rose-600">24</p></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 font-bold text-lg">SJ</div>
+                                    <div><h3 class="font-bold text-gray-900">Sarah Johnson</h3><p class="text-sm text-gray-500">sarah.j@email.com</p></div>
+                                </div>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Active</span>
+                            </div>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Department</span><span class="font-medium text-gray-900">Community Outreach</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Hours</span><span class="font-medium text-gray-900">124 hrs</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Events</span><span class="font-medium text-gray-900">12 attended</span></div>
+                            </div>
+                            <div class="flex gap-2">
+                              <a href="404.html">  <button class="flex-1 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800">View Profile</button></a>
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"><i class="fas fa-edit"></i></button>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 font-bold text-lg">MB</div>
+                                    <div><h3 class="font-bold text-gray-900">Michael Brown</h3><p class="text-sm text-gray-500">michael.b@email.com</p></div>
+                                </div>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Active</span>
+                            </div>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Department</span><span class="font-medium text-gray-900">Food Distribution</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Hours</span><span class="font-medium text-gray-900">89 hrs</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Events</span><span class="font-medium text-gray-900">8 attended</span></div>
+                            </div>
+                            <div class="flex gap-2">
+                             <a href="404.html">  <button class="flex-1 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800">View Profile</button></a> 
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"><i class="fas fa-edit"></i></button>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 font-bold text-lg">EL</div>
+                                    <div><h3 class="font-bold text-gray-900">Emily Lee</h3><p class="text-sm text-gray-500">emily.l@email.com</p></div>
+                                </div>
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">Pending</span>
+                            </div>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Department</span><span class="font-medium text-gray-900">Education</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Hours</span><span class="font-medium text-gray-900">0 hrs</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Events</span><span class="font-medium text-gray-900">0 attended</span></div>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="404.html"><button class="flex-1 px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700">Approve</button></a>
+                                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campaigns Page -->
+                <div id="page-campaigns" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div><h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Campaigns</h1><p class="text-gray-500">Manage fundraising and awareness campaigns</p></div>
+                        <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-200 flex items-center gap-2"><i class="fas fa-plus"></i>New Campaign</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover">
+                            <div class="h-32 gradient-bg-blue flex items-center justify-center"><i class="fas fa-tint text-5xl text-white opacity-80"></i></div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Active</span>
+                                    <span class="text-xs text-gray-500">12 days left</span>
+                                </div>
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">Clean Water Initiative</h3>
+                                <p class="text-sm text-gray-500 mb-4">Providing clean drinking water to rural communities</p>
+                                <div class="mb-4">
+                                    <div class="flex justify-between text-sm mb-1"><span class="text-gray-600">$32,450 / $50,000</span><span class="font-semibold text-gray-900">65%</span></div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg-blue h-2 rounded-full donation-progress" style="width: 65%"></div></div>
+                                </div>
+                                <div class="flex items-center justify-between text-sm text-gray-500"><span><i class="fas fa-users mr-1"></i> 234 donors</span><span><i class="fas fa-heart mr-1"></i> 1,200 impacted</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover">
+                            <div class="h-32 gradient-bg-rose flex items-center justify-center"><i class="fas fa-utensils text-5xl text-white opacity-80"></i></div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Active</span>
+                                    <span class="text-xs text-gray-500">8 days left</span>
+                                </div>
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">Food for Families</h3>
+                                <p class="text-sm text-gray-500 mb-4">Monthly food packages for underprivileged families</p>
+                                <div class="mb-4">
+                                    <div class="flex justify-between text-sm mb-1"><span class="text-gray-600">$18,200 / $25,000</span><span class="font-semibold text-gray-900">73%</span></div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg-rose h-2 rounded-full donation-progress" style="width: 73%"></div></div>
+                                </div>
+                                <div class="flex items-center justify-between text-sm text-gray-500"><span><i class="fas fa-users mr-1"></i> 156 donors</span><span><i class="fas fa-heart mr-1"></i> 800 impacted</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden card-hover">
+                            <div class="h-32 gradient-bg-warm flex items-center justify-center"><i class="fas fa-graduation-cap text-5xl text-white opacity-80"></i></div>
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">Upcoming</span>
+                                    <span class="text-xs text-gray-500">Starts in 5 days</span>
+                                </div>
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">Education Support</h3>
+                                <p class="text-sm text-gray-500 mb-4">School supplies and scholarships for children</p>
+                                <div class="mb-4">
+                                    <div class="flex justify-between text-sm mb-1"><span class="text-gray-600">$0 / $30,000</span><span class="font-semibold text-gray-900">0%</span></div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2"><div class="gradient-bg-warm h-2 rounded-full donation-progress" style="width: 0%"></div></div>
+                                </div>
+                                <div class="flex items-center justify-between text-sm text-gray-500"><span><i class="fas fa-users mr-1"></i> 0 donors</span><span><i class="fas fa-heart mr-1"></i> 500 target</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beneficiaries Page -->
+                <div id="page-beneficiaries" class="page-content hidden fade-in">
+                    <div class="mb-6"><h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Beneficiaries</h1><p class="text-gray-500">Track individuals and communities served</p></div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Total Beneficiaries</p><p class="text-2xl font-bold text-emerald-600">12,847</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Children</p><p class="text-2xl font-bold text-blue-600">4,521</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Families</p><p class="text-2xl font-bold text-amber-600">2,134</p></div>
+                        <div class="bg-white p-4 rounded-xl border border-gray-200"><p class="text-sm text-gray-600 mb-1">Elderly</p><p class="text-2xl font-bold text-rose-600">1,876</p></div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="text-lg font-bold text-gray-900 mb-4">Beneficiary Distribution</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600"><i class="fas fa-child"></i></div>
+                                        <div><p class="font-bold text-gray-900">Children Support</p><p class="text-sm text-gray-500">Education, nutrition, healthcare</p></div>
+                                    </div>
+                                    <p class="text-2xl font-bold text-blue-600">4,521</p>
+                                    <p class="text-sm text-gray-500">35% of total beneficiaries</p>
+                                </div>
+                                <div class="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600"><i class="fas fa-home"></i></div>
+                                        <div><p class="font-bold text-gray-900">Family Assistance</p><p class="text-sm text-gray-500">Food, shelter, emergency aid</p></div>
+                                    </div>
+                                    <p class="text-2xl font-bold text-amber-600">2,134</p>
+                                    <p class="text-sm text-gray-500">17% of total beneficiaries</p>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-rose-50 rounded-lg border border-rose-200">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center text-rose-600"><i class="fas fa-hand-holding-heart"></i></div>
+                                        <div><p class="font-bold text-gray-900">Elderly Care</p><p class="text-sm text-gray-500">Healthcare, companionship, support</p></div>
+                                    </div>
+                                    <p class="text-2xl font-bold text-rose-600">1,876</p>
+                                    <p class="text-sm text-gray-500">15% of total beneficiaries</p>
+                                </div>
+                                <div class="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600"><i class="fas fa-users"></i></div>
+                                        <div><p class="font-bold text-gray-900">Community Programs</p><p class="text-sm text-gray-500">Skills training, workshops</p></div>
+                                    </div>
+                                    <p class="text-2xl font-bold text-emerald-600">3,245</p>
+                                    <p class="text-sm text-gray-500">25% of total beneficiaries</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Page -->
+                <div id="page-events" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div><h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Events</h1><p class="text-gray-500">Manage upcoming and past events</p></div>
+                        <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-200 flex items-center gap-2"><i class="fas fa-plus"></i>New Event</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600"><i class="fas fa-tint text-xl"></i></div>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Upcoming</span>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">Water Well Building</h3>
+                            <p class="text-sm text-gray-500 mb-4">Community volunteer day to build water wells</p>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-calendar text-gray-400"></i><span>June 15, 2026</span></div>
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-clock text-gray-400"></i><span>9:00 AM - 4:00 PM</span></div>
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-map-marker-alt text-gray-400"></i><span>Rural Community Center</span></div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500"><i class="fas fa-users mr-1"></i> 45 volunteers</span>
+                                <a href="404.html"><button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Manage</button></a>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center text-rose-600"><i class="fas fa-utensils text-xl"></i></div>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Upcoming</span>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">Food Drive 2026</h3>
+                            <p class="text-sm text-gray-500 mb-4">Annual food collection and distribution event</p>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-calendar text-gray-400"></i><span>June 22, 2026</span></div>
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-clock text-gray-400"></i><span>8:00 AM - 6:00 PM</span></div>
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-map-marker-alt text-gray-400"></i><span>City Central Park</span></div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500"><i class="fas fa-users mr-1"></i> 120 volunteers</span>
+                                <a href="404.html"><button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Manage</button></a>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600"><i class="fas fa-graduation-cap text-xl"></i></div>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">Completed</span>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-900 mb-2">Back to School Drive</h3>
+                            <p class="text-sm text-gray-500 mb-4">School supplies distribution for underprivileged children</p>
+                            <div class="space-y-2 mb-4">
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-calendar text-gray-400"></i><span>May 15, 2026</span></div>
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-clock text-gray-400"></i><span>10:00 AM - 2:00 PM</span></div>
+                                <div class="flex items-center gap-2 text-sm text-gray-600"><i class="fas fa-map-marker-alt text-gray-400"></i><span>Community Hall</span></div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500"><i class="fas fa-users mr-1"></i> 85 volunteers</span>
+                              <a href="404.html">  <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">View Report</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div id="page-analytics" class="page-content hidden fade-in">
+                    <div class="mb-6"><h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Impact Analytics</h1><p class="text-gray-500">Detailed performance metrics and trends</p></div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h2 class="text-lg font-bold text-gray-900 mb-4">Donation Trends</h2>
+                            <div class="h-64 flex items-end justify-between gap-2">
+                                <div class="flex-1 bg-emerald-200 rounded-t-lg" style="height: 30%"></div>
+                                <div class="flex-1 bg-emerald-200 rounded-t-lg" style="height: 45%"></div>
+                                <div class="flex-1 bg-emerald-200 rounded-t-lg" style="height: 60%"></div>
+                                <div class="flex-1 bg-emerald-200 rounded-t-lg" style="height: 50%"></div>
+                                <div class="flex-1 bg-emerald-200 rounded-t-lg" style="height: 75%"></div>
+                                <div class="flex-1 bg-emerald-200 rounded-t-lg" style="height: 85%"></div>
+                                <div class="flex-1 bg-emerald-200 rounded-t-lg" style="height: 90%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2 text-xs text-gray-500"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span></div>
+                        </div>
+                        <div class="bg-white rounded-xl border border-gray-200 p-6">
+                            <h2 class="text-lg font-bold text-gray-900 mb-4">Volunteer Hours</h2>
+                            <div class="h-64 flex items-end justify-between gap-2">
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 40%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 55%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 45%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 70%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 80%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 95%"></div>
+                                <div class="flex-1 bg-blue-200 rounded-t-lg" style="height: 85%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2 text-xs text-gray-500"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span></div>
+                        </div>
+                    </div>
+                    <div class="mt-6 bg-white rounded-xl border border-gray-200 p-6">
+                        <h2 class="text-lg font-bold text-gray-900 mb-4">Key Performance Indicators</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-900 mb-1">98.5%</div>
+                                <div class="text-sm text-gray-500">Donation Success Rate</div>
+                                <div class="text-xs text-emerald-600 mt-1">+2.3% from last month</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-900 mb-1">24h</div>
+                                <div class="text-sm text-gray-500">Avg. Response Time</div>
+                                <div class="text-xs text-emerald-600 mt-1">-4h improvement</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-900 mb-1">4.9/5</div>
+                                <div class="text-sm text-gray-500">Donor Satisfaction</div>
+                                <div class="text-xs text-gray-500 mt-1">Based on 234 reviews</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-gray-900 mb-1">$2.4M</div>
+                                <div class="text-sm text-gray-500">Total Funds Managed</div>
+                                <div class="text-xs text-emerald-600 mt-1">+15% YTD</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Page -->
+                <!-- <div id="page-reports" class="page-content hidden fade-in">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                        <div><h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Reports</h1><p class="text-gray-500">Generate and download system reports</p></div>
+                        <button class="px-4 py-2.5 gradient-bg text-white font-medium rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-emerald-200 flex items-center gap-2"><i class="fas fa-plus"></i>Create Report</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-4"><i class="fas fa-users text-xl"></i></div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Donor Activity Report</h3>
+                            <p class="text-sm text-gray-500 mb-4">Comprehensive log of donor contributions and engagement</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 2 days ago</span>
+                                <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 mb-4"><i class="fas fa-hand-holding-heart text-xl"></i></div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Donation Summary</h3>
+                            <p class="text-sm text-gray-500 mb-4">Financial overview of all donations and campaigns</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 5 hours ago</span>
+                                <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4"><i class="fas fa-chart-line text-xl"></i></div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Impact Assessment</h3>
+                            <p class="text-sm text-gray-500 mb-4">Beneficiary reach and program effectiveness metrics</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 1 week ago</span>
+                                <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 mb-4"><i class="fas fa-users-cog text-xl"></i></div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Volunteer Report</h3>
+                            <p class="text-sm text-gray-500 mb-4">Volunteer hours, activities, and engagement tracking</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 3 days ago</span>
+                                <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover">
+                            <div class="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center text-rose-600 mb-4"><i class="fas fa-exclamation-triangle text-xl"></i></div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Audit Report</h3>
+                            <p class="text-sm text-gray-500 mb-4">Financial audit and compliance status tracking</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-400">Last generated: 1 day ago</span>
+                                <button class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800">Download</button>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 card-hover border-dashed border-2 border-gray-300 flex flex-col items-center justify-center text-center p-8">
+                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 mb-4"><i class="fas fa-plus text-2xl"></i></div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Custom Report</h3>
+                            <p class="text-sm text-gray-500 mb-4">Create a tailored report with specific parameters</p>
+                            <button class="px-6 py-2 border-2 border-emerald-600 text-emerald-600 font-medium rounded-lg hover:bg-emerald-50 transition-colors">Configure</button>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- Settings Page -->
+                <div id="page-settings" class="page-content hidden fade-in">
+                    <div class="mb-6"><h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Admin Settings</h1><p class="text-gray-500">Configure system preferences and security policies</p></div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fas fa-shield-alt text-emerald-600"></i>Security Settings</h2>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                                        <div><p class="font-medium text-gray-900">Two-Factor Authentication</p><p class="text-sm text-gray-500">Required for all admin accounts</p></div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                                        <div><p class="font-medium text-gray-900">Password Policy</p><p class="text-sm text-gray-500">Enforce strong passwords (12+ chars)</p></div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between py-3">
+                                        <div><p class="font-medium text-gray-900">Session Timeout</p><p class="text-sm text-gray-500">Auto-logout after 30 minutes inactive</p></div>
+                                        <select class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"><option>15 minutes</option><option selected>30 minutes</option><option>1 hour</option><option>2 hours</option></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fas fa-bell text-emerald-600"></i>Notification Settings</h2>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                                        <div><p class="font-medium text-gray-900">New Donations</p><p class="text-sm text-gray-500">Email alerts for new donations</p></div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                                        <div><p class="font-medium text-gray-900">New Volunteers</p><p class="text-sm text-gray-500">Alert when new volunteers register</p></div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between py-3">
+                                        <div><p class="font-medium text-gray-900">Weekly Summary</p><p class="text-sm text-gray-500">Receive weekly impact reports</p></div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">System Information</h2>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex justify-between"><span class="text-gray-600">Version</span><span class="font-medium text-gray-900">v2.4.1</span></div>
+                                    <div class="flex justify-between"><span class="text-gray-600">Last Updated</span><span class="font-medium text-gray-900">June 1, 2026</span></div>
+                                    <div class="flex justify-between"><span class="text-gray-600">Database</span><span class="font-medium text-gray-900">PostgreSQL 14.2</span></div>
+                                    <div class="flex justify-between"><span class="text-gray-600">Node.js</span><span class="font-medium text-gray-900">v18.17.0</span></div>
+                                </div>
+                               <a href="404.html"> <button class="w-full mt-4 py-2 border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors text-sm font-medium">Check for Updates</button></a>
+                            </div>
+                            <div class="bg-white rounded-xl border border-gray-200 p-6">
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">Maintenance</h2>
+                                <div class="space-y-3">
+                                    <button class="w-full p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left flex items-center gap-3">
+                                        <i class="fas fa-broom text-gray-400"></i>
+                                        <div><p class="font-medium text-gray-900 text-sm">Clear Cache</p><p class="text-xs text-gray-500">Free up 2.4 GB</p></div>
+                                    </button>
+                                    <button class="w-full p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left flex items-center gap-3">
+                                        <i class="fas fa-database text-gray-400"></i>
+                                        <div><p class="font-medium text-gray-900 text-sm">Backup Database</p><p class="text-xs text-gray-500">Last: 2 hours ago</p></div>
+                                    </button>
+                                    <button class="w-full p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left flex items-center gap-3">
+                                        <i class="fas fa-file-export text-gray-400"></i>
+                                        <div><p class="font-medium text-gray-900 text-sm">Export Logs</p><p class="text-xs text-gray-500">Download system logs</p></div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="bg-red-50 rounded-xl border border-red-200 p-6">
+                                <h2 class="text-lg font-bold text-red-900 mb-2">Danger Zone</h2>
+                                <p class="text-sm text-red-700 mb-4">Destructive actions for system management</p>
+                                <button class="w-full py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium mb-2">Restart Services</button>
+                                <button class="w-full py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium">Factory Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openSidebar);
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // Navigation functionality
+        function navigateTo(page) {
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            const selectedPage = document.getElementById('page-' + page);
+            if (selectedPage) {
+                selectedPage.classList.remove('hidden');
+            }
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+            closeSidebar();
+            window.scrollTo(0, 0);
+        }
+
+        // Logout handler
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                console.log('Logging out...');
+                sessionStorage.clear();
+                localStorage.removeItem('authToken');
+                alert('You have been logged out successfully.');
+            }
+        }
+
+        // Initialize dashboard as active
+        document.addEventListener('DOMContentLoaded', () => {
+            navigateTo('dashboard');
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                closeSidebar();
+            }
+        });
+
+        // User name and initial from localStorage
+        document.addEventListener("DOMContentLoaded", function () {
+            const user = localStorage.getItem("loggedInUser");
+            if(user){
+                document.getElementById("userName").innerText = user;
+                const initials = user.split(" ").map(word => word.charAt(0)).join("").toUpperCase();
+                document.getElementById("userInitial").innerText = initials;
+            }
+        });
+    </script>
+</body>
+</html>
